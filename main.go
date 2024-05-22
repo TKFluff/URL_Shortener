@@ -62,11 +62,9 @@ func handleMain(w http.ResponseWriter, r *http.Request) {
 						var visibility = shortenedURL.style.display;
 						if (visibility == "none")  {
 							shortenedURL.style.display = "block";
-							URLAvailability.style.display = "block";
 						}
 						else {
 							shortenedURL.style.display = "none";
-							URLAvailability.style.display = "none";
 						}
 					}
 					</script>
