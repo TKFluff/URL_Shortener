@@ -105,6 +105,12 @@ func handleNewURL(w http.ResponseWriter, r *http.Request) {
 	var shortKey string
 	if r.FormValue(("urlOption")) == "Auto-Generate" {
 		shortKey = generateShortKey()
+		// Make sure that key is not already in the map. If it's in the map, keep generating new keys.
+		val := urls[shortKey]
+		for val != "" {
+			shortKey = generateShortKey()
+			val = urls[shortKey]
+		}
 	} else {
 		shortKey = r.FormValue("shortenedURL")
 	}
@@ -123,13 +129,6 @@ func handleNewURL(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "URL is already in use", http.StatusBadRequest)
 		return
 	}
-
-	// Make sure that key is not already in the map. If it's in the map, keep generating new keys.
-	// val := urls[shortKey]
-	// for val != "" {
-	// 	shortKey := generateShortKey()
-	// 	val = urls[shortKey]
-	// }
 	urls[shortKey] = originalURL
 
 	// Construct the full shortened URL
