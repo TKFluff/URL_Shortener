@@ -82,6 +82,9 @@ func handleMain(w http.ResponseWriter, r *http.Request) {
 	`)
 }
 
+// This function will handle the new url based off the user selection of Auto-Generate or User Input.
+// If the key is already found, either a new key will be generated (auto-generate option), or the user will
+// be notified that the key is already in use and needs to be re-assigned.
 func handleNewURL(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
