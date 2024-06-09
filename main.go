@@ -201,3 +201,5 @@ func isReachable(testUrl string) bool {
 		return true
 	}
 }
+
+// Need to add a db to this so that data is hosted there instead of in this instance whenever the exe runs. Look into postgres or MySQL.
