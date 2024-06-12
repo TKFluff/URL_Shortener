@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	// "database/sql"
+	// _ "github.com/go-sql-driver/mysql"
 )
 
 var urls = make(map[string]string)
