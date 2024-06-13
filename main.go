@@ -18,6 +18,13 @@ var urls = make(map[string]string)
 var serverLoc = "3030"
 var homeURL = fmt.Sprintf("http://localhost:%s", serverLoc)
 
+const (
+	username = "root"
+	password = "password"
+	hostname = "127.0.0.1:3306"
+	dbname   = "ShortURL"
+)
+
 /*
 * Need a main page for user to input url
 Need a page after that url gets inputted that shows original url and now new url.
