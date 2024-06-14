@@ -20,7 +20,7 @@ var homeURL = fmt.Sprintf("http://localhost:%s", serverLoc)
 
 const (
 	username = "root"
-	password = "password"
+	password = "Aeiyuyaeae1!"
 	hostname = "127.0.0.1:3306"
 	dbname   = "ShortURL"
 )
