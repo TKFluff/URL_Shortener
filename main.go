@@ -18,6 +18,7 @@ var urls = make(map[string]string)
 var serverLoc = "3030"
 var homeURL = fmt.Sprintf("http://localhost:%s", serverLoc)
 
+// Need to test connection still. Updated w/ root password. dbname is subject to change.
 const (
 	username = "root"
 	password = "Aeiyuyaeae1!"
