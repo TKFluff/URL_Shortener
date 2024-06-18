@@ -18,15 +18,22 @@ var urls = make(map[string]string)
 var serverLoc = "3030"
 var homeURL = fmt.Sprintf("http://localhost:%s", serverLoc)
 
+// Database fields to query.
+type URL struct {
+	ShortURL string
+	LongURL  string
+}
+
 // Need to test connection still. Updated w/ root password. dbname is subject to change.
 // Once connection is made with db, Maybe can decide on things like adding a timestamp that'll determine
 // expiration date should we want urls to not be permanently held. Can look into LRU cache as well.
-const (
-	username = "root"
-	password = "Aeiyuyaeae1!"
-	hostname = "127.0.0.1:3306"
-	dbname   = "ShortURL"
-)
+// const (
+// 	username  = "root"
+// 	password  = "Aeiyuyaeae1!"
+// 	hostname  = "127.0.0.1:3306"
+// 	dbname    = "URLShortener"
+// 	tablename = "ShortURL"
+// )
 
 /*
 * Need a main page for user to input url
