@@ -19,6 +19,8 @@ var serverLoc = "3030"
 var homeURL = fmt.Sprintf("http://localhost:%s", serverLoc)
 
 // Need to test connection still. Updated w/ root password. dbname is subject to change.
+// Once connection is made with db, Maybe can decide on things like adding a timestamp that'll determine
+// expiration date should we want urls to not be permanently held. Can look into LRU cache as well.
 const (
 	username = "root"
 	password = "Aeiyuyaeae1!"
