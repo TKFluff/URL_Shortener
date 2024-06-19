@@ -20,8 +20,9 @@ var homeURL = fmt.Sprintf("http://localhost:%s", serverLoc)
 
 // Database fields to query.
 type URL struct {
-	ShortURL string
-	LongURL  string
+	ShortURL       string
+	LongURL        string
+	ExpirationDate int64
 }
 
 // Need to test connection still. Updated w/ root password. dbname is subject to change.
