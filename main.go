@@ -1,7 +1,9 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
+	"log"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -11,12 +13,13 @@ import (
 
 	// "database/sql"
 
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/go-sql-driver/mysql"
 )
 
 var urls = make(map[string]string)
 var serverLoc = "3030"
 var homeURL = fmt.Sprintf("http://localhost:%s", serverLoc)
+var db *sql.DB
 
 // Database fields to query.
 type URL struct {
@@ -28,13 +31,13 @@ type URL struct {
 // Need to test connection still. Updated w/ root password. dbname is subject to change.
 // Once connection is made with db, Maybe can decide on things like adding a timestamp that'll determine
 // expiration date should we want urls to not be permanently held. Can look into LRU cache as well.
-// const (
-// 	username  = "root"
-// 	password  = "Aeiyuyaeae1!"
-// 	hostname  = "127.0.0.1:3306"
-// 	dbname    = "URLShortener"
-// 	tablename = "ShortURL"
-// )
+const (
+	username  = "root"
+	password  = "Aeiyuyaeae1!"
+	hostname  = "127.0.0.1:3306"
+	dbname    = "URLShortener"
+	tablename = "ShortURL"
+)
 
 /*
 * Need a main page for user to input url
@@ -47,6 +50,27 @@ func main() {
 	http.HandleFunc("/short/", handleRedirect)
 	fmt.Println("URL Shortener is running on :" + serverLoc)
 	http.ListenAndServe(":"+serverLoc, nil)
+
+	cfg := mysql.Config{
+		User:   username,
+		Passwd: password,
+		Net:    "tcp",
+		Addr:   hostname,
+		DBName: dbname,
+	}
+	// Get a database handle.
+	var err error
+
+	db, err = sql.Open("mysql", cfg.FormatDSN())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	pingErr := db.Ping()
+	if pingErr != nil {
+		log.Fatal(pingErr)
+	}
+	fmt.Println("Connected!")
 }
 
 func handleMain(w http.ResponseWriter, r *http.Request) {
