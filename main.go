@@ -26,6 +26,7 @@ type URL struct {
 	ShortURL       string
 	LongURL        string
 	ExpirationDate int64
+	Views          int64
 }
 
 // Need to test connection still. Updated w/ root password. dbname is subject to change.
