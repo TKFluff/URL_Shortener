@@ -33,10 +33,11 @@ type URL struct {
 // Once connection is made with db, Maybe can decide on things like adding a timestamp that'll determine
 // expiration date should we want urls to not be permanently held. Can look into LRU cache as well.
 const (
-	username  = "root"
-	password  = "Aeiyuyaeae1!"
-	hostname  = "127.0.0.1:3306"
-	dbname    = "URLShortener"
+	username = "root"
+	password = "Aeiyuyaeae1!"
+	hostname = "127.0.0.1:3306"
+	dbname   = "URLShortener"
+	//Maybe don't need this? Need to figure out connections.
 	tablename = "ShortURL"
 )
 
