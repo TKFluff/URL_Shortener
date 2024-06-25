@@ -22,6 +22,7 @@ var homeURL = fmt.Sprintf("http://localhost:%s", serverLoc)
 var db *sql.DB
 
 // Database fields to query.
+// The key will be the long url for the db. The longURL can possibly show up for multiple shorturls.
 type URL struct {
 	ShortURL       string
 	LongURL        string
@@ -133,6 +134,8 @@ func handleMain(w http.ResponseWriter, r *http.Request) {
 // This function will handle the new url based off the user selection of Auto-Generate or User Input.
 // If the key is already found, either a new key will be generated (auto-generate option), or the user will
 // be notified that the key is already in use and needs to be re-assigned.
+// This is where we want to store the new shorturl into the table with it's respective expiration date,
+// longurl, and view count. View count is defaulted to 0.
 func handleNewURL(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
@@ -200,6 +203,9 @@ func handleNewURL(w http.ResponseWriter, r *http.Request) {
 	`)
 }
 
+// At this redirect, we want to update the view count for the given shorturl.
+// Down the line, possibly want to make it so this is no longer updated per redirect,
+// but maybe done in "batches". This app probably won't ever get to a point that this is need though...
 func handleRedirect(w http.ResponseWriter, r *http.Request) {
 	shortKey := strings.TrimPrefix(r.URL.Path, "/short/")
 	if shortKey == "" {
