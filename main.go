@@ -216,6 +216,7 @@ func handleRedirect(w http.ResponseWriter, r *http.Request) {
 	// Retrieve the original URL from the `urls` map using the shortened key
 	originalURL, found := urls[shortKey]
 	if !found {
+		// Might want more of a response on the webpage as well
 		http.Error(w, "Shortened key not found", http.StatusNotFound)
 		return
 	}
