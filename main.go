@@ -83,6 +83,7 @@ func handleMain(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "text/html")
 
+	//personal comments to keep track of things for me.
 	//title is what the tab is called.
 	//body is what shows up on the page
 	//form creates a form and the method determines what kind of http call it is.
@@ -168,6 +169,10 @@ func handleNewURL(w http.ResponseWriter, r *http.Request) {
 	} else {
 		shortKey = r.FormValue("shortenedURL")
 	}
+
+	//Case in which a url requested from the user is already in use.
+	//TODO: In the future, can try to make it so that the user is notified in real time
+	//from the initial page so that they don't need to submit the form to know that the url is already in use.
 	if urls[shortKey] != "" {
 		fmt.Fprint(w, `
 			<!DOCTYPE html>
