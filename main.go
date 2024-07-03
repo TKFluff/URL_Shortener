@@ -106,7 +106,16 @@ func handleMain(w http.ResponseWriter, r *http.Request) {
 					<option>Auto-Generate</option>
 					<option>User Input</option>
 					</select>
-					<script>
+				</div>
+				<div class="field" id="shortenedURL" style="display: none;"
+					<label for="shortenedURL"> Shortened URL: http://localhost:3030/short/ </label>
+					<input type="text" name="shortenedURL" placeholder="Enter a key for the new url">
+				</div>
+				<p>
+					<input type="submit" value="Shorten">
+				</p>
+
+				<script>
 					function shortURLVisibility() {
 						var shortenedURL = document.getElementById("shortenedURL");
 						var visibility = shortenedURL.style.display;
@@ -118,14 +127,6 @@ func handleMain(w http.ResponseWriter, r *http.Request) {
 						}
 					}
 					</script>
-				</div>
-				<div class="field" id="shortenedURL" style="display: none;"
-					<label for="shortenedURL"> Shortened URL: http://localhost:3030/short/ </label>
-					<input type="text" name="shortenedURL" placeholder="Enter a key for the new url">
-				</div>
-				<p>
-					<input type="submit" value="Shorten">
-				</p>
 			</form>
 		</body>
 		</html>
@@ -146,13 +147,13 @@ func handleNewURL(w http.ResponseWriter, r *http.Request) {
 	// Check if the url structure is valid
 	originalURL := r.FormValue("url")
 	if !isUrl(originalURL) {
-		http.Error(w, "Not a valid url", http.StatusBadRequest)
+		http.Error(w, "Not a valid original url", http.StatusBadRequest)
 		return
 	}
 
 	// Check if the url is a valid/public site
 	if !isReachable(originalURL) {
-		http.Error(w, "Not a valid url", http.StatusBadRequest)
+		http.Error(w, "Not a valid original url", http.StatusBadRequest)
 		return
 	}
 
@@ -210,10 +211,21 @@ func handleNewURL(w http.ResponseWriter, r *http.Request) {
 
 // At this redirect, we want to update the view count for the given shorturl.
 // Down the line, possibly want to make it so this is no longer updated per redirect,
-// but maybe done in "batches". This app probably won't ever get to a point that this is need though...
+// but maybe done in "batches". This app probably won't ever get to a point that this is needed though...
 func handleRedirect(w http.ResponseWriter, r *http.Request) {
 	shortKey := strings.TrimPrefix(r.URL.Path, "/short/")
 	if shortKey == "" {
+		fmt.Fprint(w, `
+		<!DOCTYPE html>
+		<html>
+		<head>
+			<title>URL Shortener</title>
+		</head>
+		<body>
+			<h2> <a href="`, homeURL, `">`, "Return to homepage", `</a> </h2>
+		</body>
+		</html>
+		`)
 		http.Error(w, "Shortened key is missing", http.StatusBadRequest)
 		return
 	}
@@ -221,7 +233,17 @@ func handleRedirect(w http.ResponseWriter, r *http.Request) {
 	// Retrieve the original URL from the `urls` map using the shortened key
 	originalURL, found := urls[shortKey]
 	if !found {
-		// Might want more of a response on the webpage as well
+		fmt.Fprint(w, `
+		<!DOCTYPE html>
+		<html>
+		<head>
+			<title>URL Shortener</title>
+		</head>
+		<body>
+			<h2> <a href="`, homeURL, `">`, "Return to homepage", `</a> </h2>
+		</body>
+		</html>
+		`)
 		http.Error(w, "Shortened key not found", http.StatusNotFound)
 		return
 	}
