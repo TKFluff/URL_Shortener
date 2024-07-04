@@ -252,10 +252,8 @@ func handleRedirect(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, originalURL, http.StatusMovedPermanently)
 }
 
-// Open to changing the auto generated key. Possibly can also ask for a "length" for the key that the user can use for variability.
 func generateShortKey() string {
 	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	// const userkeyLength = inserted variable
 	const keyLength = 4
 	const backTruncAmount = 1000
 	const frontTruncAmount = 1000000000
