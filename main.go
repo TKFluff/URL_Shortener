@@ -252,6 +252,7 @@ func handleRedirect(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, originalURL, http.StatusMovedPermanently)
 }
 
+// Can change this up. Maybe the length can be randomized from a certain length to another. Ex: 5-8 characters long.
 func generateShortKey() string {
 	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	const keyLength = 4
