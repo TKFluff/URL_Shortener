@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -55,8 +56,10 @@ func main() {
 	http.ListenAndServe(":"+serverLoc, nil)
 
 	cfg := mysql.Config{
-		User:   username,
-		Passwd: password,
+		// User:   username,
+		// Passwd: password,
+		User:   os.Getenv("DBUSER"),
+		Passwd: os.Getenv("DBPASS"),
 		Net:    "tcp",
 		Addr:   hostname,
 		DBName: dbname,
