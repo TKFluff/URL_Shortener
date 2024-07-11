@@ -252,6 +252,7 @@ func handleRedirect(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Before the redirect, we update the database with the new view count.
+	// Not sure if we want a separate data structure to match that of the database fields. Not too well-versed in this.
 
 	// Redirect the user to the original URL
 	http.Redirect(w, r, originalURL, http.StatusMovedPermanently)
