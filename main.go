@@ -18,6 +18,7 @@ import (
 )
 
 var urls = make(map[string]string)
+var urlInfo = make(map[string]URL)
 var serverLoc = "3030"
 var homeURL = fmt.Sprintf("http://localhost:%s", serverLoc)
 var db *sql.DB
@@ -193,6 +194,11 @@ func handleNewURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	urls[shortKey] = originalURL
+	var info = urlInfo[shortKey]
+	info.LongURL = originalURL
+	info.Views = 0
+	info.ShortURL = shortKey
+	urlInfo[shortKey] = info
 
 	// Construct the full shortened URL
 	shortenedURL := fmt.Sprintf("http://localhost:%s/short/%s", serverLoc, shortKey)
