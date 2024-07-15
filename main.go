@@ -1,18 +1,16 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
 	"net/url"
-	"os"
 	"strconv"
 	"strings"
 	"time"
-
-	// "database/sql"
 
 	"github.com/go-sql-driver/mysql"
 )
@@ -22,6 +20,10 @@ var urlInfo = make(map[string]URL)
 var serverLoc = "3030"
 var homeURL = fmt.Sprintf("http://localhost:%s", serverLoc)
 var db *sql.DB
+
+const maxOpenConns = 10
+const maxIdleConns = 10
+const maxLifeTime = time.Minute * 3
 
 // Database fields to query.
 // The key will be the long url for the db. The longURL can possibly show up for multiple shorturls.
@@ -41,7 +43,7 @@ const (
 	hostname = "127.0.0.1:3306"
 	dbname   = "URLShortener"
 	//Maybe don't need this? Need to figure out connections.
-	tablename = "ShortURL"
+	// tablename = "ShortURL"
 )
 
 /*
@@ -50,17 +52,9 @@ Need a page after that url gets inputted that shows original url and now new url
 Lastly, need a page to process that shortened url and "spit out" original url
 */
 func main() {
-	http.HandleFunc("/", handleMain)
-	http.HandleFunc("/shorturl", handleNewURL)
-	http.HandleFunc("/short/", handleRedirect)
-	fmt.Println("URL Shortener is running on :" + serverLoc)
-	http.ListenAndServe(":"+serverLoc, nil)
-
 	cfg := mysql.Config{
-		// User:   username,
-		// Passwd: password,
-		User:   os.Getenv("DBUSER"),
-		Passwd: os.Getenv("DBPASS"),
+		User:   username,
+		Passwd: password,
 		Net:    "tcp",
 		Addr:   hostname,
 		DBName: dbname,
@@ -68,7 +62,15 @@ func main() {
 	// Get a database handle.
 	var err error
 
+	fmt.Println("Before Connection!")
 	db, err = sql.Open("mysql", cfg.FormatDSN())
+
+	// Configuring connection settings for the database.
+	// TODO: Update values later based on what is reasonable.
+	db.SetConnMaxLifetime(maxLifeTime)
+	db.SetMaxOpenConns(maxOpenConns)
+	db.SetMaxIdleConns(maxIdleConns)
+
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -78,6 +80,12 @@ func main() {
 		log.Fatal(pingErr)
 	}
 	fmt.Println("Connected!")
+
+	http.HandleFunc("/", handleMain)
+	http.HandleFunc("/shorturl", handleNewURL)
+	http.HandleFunc("/short/", handleRedirect)
+	fmt.Println("URL Shortener is running on :" + serverLoc)
+	http.ListenAndServe(":"+serverLoc, nil)
 }
 
 func handleMain(w http.ResponseWriter, r *http.Request) {
@@ -193,12 +201,17 @@ func handleNewURL(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "URL is already in use", http.StatusBadRequest)
 		return
 	}
+
+	// Populating info that has to deal w/ shortened url to be pushed to the database.
 	urls[shortKey] = originalURL
 	var info = urlInfo[shortKey]
 	info.LongURL = originalURL
 	info.Views = 0
 	info.ShortURL = shortKey
 	urlInfo[shortKey] = info
+
+	query := "INSERT INTO `ShortURL` (`ShortURL`, `LongURL`, `ExpirationDate`, `Views`) VALUES (?, ?, NOW()  + INTERVAL 168 HOUR, 0)"
+	db.ExecContext(context.Background(), query, shortKey, originalURL)
 
 	// Construct the full shortened URL
 	shortenedURL := fmt.Sprintf("http://localhost:%s/short/%s", serverLoc, shortKey)
