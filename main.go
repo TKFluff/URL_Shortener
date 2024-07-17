@@ -38,12 +38,11 @@ type URL struct {
 // Once connection is made with db, Maybe can decide on things like adding a timestamp that'll determine
 // expiration date should we want urls to not be permanently held. Can look into LRU cache as well.
 const (
-	username = "root"
-	password = "Aeiyuyaeae1!"
-	hostname = "127.0.0.1:3306"
-	dbname   = "URLShortener"
-	//Maybe don't need this? Need to figure out connections.
-	// tablename = "ShortURL"
+	username  = "root"
+	password  = "Aeiyuyaeae1!"
+	hostname  = "127.0.0.1:3306"
+	dbname    = "URLShortener"
+	tablename = "ShortURL"
 )
 
 /*
@@ -210,7 +209,7 @@ func handleNewURL(w http.ResponseWriter, r *http.Request) {
 	info.ShortURL = shortKey
 	urlInfo[shortKey] = info
 
-	query := "INSERT INTO `ShortURL` (`ShortURL`, `LongURL`, `ExpirationDate`, `Views`) VALUES (?, ?, NOW()  + INTERVAL 168 HOUR, 0)"
+	query := "INSERT INTO `ShortURL` (`shorturl`, `longurl`, `expirationdate`, `views`) VALUES (?, ?, NOW()  + INTERVAL 168 HOUR, 0)"
 	db.ExecContext(context.Background(), query, shortKey, originalURL)
 
 	// Construct the full shortened URL
