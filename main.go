@@ -147,8 +147,6 @@ func handleMain(w http.ResponseWriter, r *http.Request) {
 // This function will handle the new url based off the user selection of Auto-Generate or User Input.
 // If the key is already found, either a new key will be generated (auto-generate option), or the user will
 // be notified that the key is already in use and needs to be re-assigned.
-// This is where we want to store the new shorturl into the table with it's respective expiration date,
-// longurl, and view count. View count is defaulted to 0.
 func handleNewURL(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
@@ -201,6 +199,8 @@ func handleNewURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// This is where we want to store the new shorturl into the table with it's respective expiration date,
+	// longurl, and view count. View count is defaulted to 0.
 	// Populating info that has to deal w/ shortened url to be pushed to the database.
 	urls[shortKey] = originalURL
 	var info = urlInfo[shortKey]
@@ -270,7 +270,6 @@ func handleRedirect(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Before the redirect, we update the database with the new view count.
-	// Not sure if we want a separate data structure to match that of the database fields. Not too well-versed in this.
 	// query := "SELECT `Views` from `ShortURL` (`ShortURL`, `LongURL`, `ExpirationDate`, `Views`) VALUES (?, ?, NOW()  + INTERVAL 168 HOUR, 0)"
 	// db.ExecContext(context.Background(), query, shortKey, originalURL)
 	// db.Query(query)
