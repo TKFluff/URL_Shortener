@@ -270,9 +270,12 @@ func handleRedirect(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Before the redirect, we update the database with the new view count.
-	// query := "SELECT `Views` from `ShortURL` (`ShortURL`, `LongURL`, `ExpirationDate`, `Views`) VALUES (?, ?, NOW()  + INTERVAL 168 HOUR, 0)"
-	// db.ExecContext(context.Background(), query, shortKey, originalURL)
-	// db.Query(query)
+	var info = urlInfo[shortKey]
+	var views = info.Views
+	views += 1
+	info.Views = views
+	query := "Update ShortURL set views =? where shorturl =?"
+	db.ExecContext(context.Background(), query, views, info.ShortURL)
 	// After querying views, want to increment by one and update table.
 
 	// Redirect the user to the original URL
