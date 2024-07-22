@@ -203,6 +203,7 @@ func handleNewURL(w http.ResponseWriter, r *http.Request) {
 	// longurl, and view count. View count is defaulted to 0.
 	// Populating info that has to deal w/ shortened url to be pushed to the database.
 	urls[shortKey] = originalURL
+	// Not sure if this is needed...
 	var info = urlInfo[shortKey]
 	info.LongURL = originalURL
 	info.Views = 0
@@ -252,8 +253,10 @@ func handleRedirect(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Retrieve the original URL from the `urls` map using the shortened key
-	originalURL, found := urls[shortKey]
-	if !found {
+	urlQuery := "Select LongURL from ShortURL where shorturl = ?"
+	var longurl string
+	err := db.QueryRow(urlQuery, shortKey).Scan(&longurl)
+	if err == sql.ErrNoRows {
 		fmt.Fprint(w, `
 		<!DOCTYPE html>
 		<html>
@@ -269,17 +272,19 @@ func handleRedirect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Before the redirect, we update the database with the new view count.
-	var info = urlInfo[shortKey]
-	var views = info.Views
+	var views int
+	viewsQuery := "select views from shorturl where shorturl = ?"
+	viewsErr := db.QueryRow(viewsQuery, shortKey).Scan(&views)
+	if viewsErr == sql.ErrNoRows {
+		return
+	}
 	views += 1
-	info.Views = views
 	query := "Update ShortURL set views =? where shorturl =?"
-	db.ExecContext(context.Background(), query, views, info.ShortURL)
+	db.ExecContext(context.Background(), query, views, shortKey)
 	// After querying views, want to increment by one and update table.
 
 	// Redirect the user to the original URL
-	http.Redirect(w, r, originalURL, http.StatusMovedPermanently)
+	http.Redirect(w, r, longurl, http.StatusMovedPermanently)
 }
 
 // Can change this up. Maybe the length can be randomized from a certain length to another. Ex: 5-8 characters long.
