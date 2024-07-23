@@ -171,6 +171,7 @@ func handleNewURL(w http.ResponseWriter, r *http.Request) {
 	if r.FormValue(("urlOption")) == "Auto-Generate" {
 		shortKey = generateShortKey()
 		// Make sure that key is not already in the map. If it's in the map, keep generating new keys.
+		// Maybe can change this to look into db instead of map stored locally when function runs.
 		val := urls[shortKey]
 		for val != "" {
 			shortKey = generateShortKey()
@@ -203,13 +204,13 @@ func handleNewURL(w http.ResponseWriter, r *http.Request) {
 	// longurl, and view count. View count is defaulted to 0.
 	// Populating info that has to deal w/ shortened url to be pushed to the database.
 	urls[shortKey] = originalURL
-	// Not sure if this is needed...
 	var info = urlInfo[shortKey]
 	info.LongURL = originalURL
 	info.Views = 0
 	info.ShortURL = shortKey
 	urlInfo[shortKey] = info
 
+	// Insert the data into the db. Should only get here if URL is not already in use.
 	query := "INSERT INTO `ShortURL` (`shorturl`, `longurl`, `expirationdate`, `views`) VALUES (?, ?, NOW()  + INTERVAL 168 HOUR, 0)"
 	db.ExecContext(context.Background(), query, shortKey, originalURL)
 
