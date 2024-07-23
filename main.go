@@ -273,8 +273,10 @@ func handleRedirect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// After querying views, want to increment by one and update table.
 	var views int
 	viewsQuery := "select views from shorturl where shorturl = ?"
+	// Scan is needed to get the err response from QueryRow. &views assigns the query value to view.
 	viewsErr := db.QueryRow(viewsQuery, shortKey).Scan(&views)
 	if viewsErr == sql.ErrNoRows {
 		return
@@ -282,7 +284,6 @@ func handleRedirect(w http.ResponseWriter, r *http.Request) {
 	views += 1
 	query := "Update ShortURL set views =? where shorturl =?"
 	db.ExecContext(context.Background(), query, views, shortKey)
-	// After querying views, want to increment by one and update table.
 
 	// Redirect the user to the original URL
 	http.Redirect(w, r, longurl, http.StatusMovedPermanently)
