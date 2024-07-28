@@ -15,6 +15,7 @@ import (
 	"github.com/go-sql-driver/mysql"
 )
 
+// urls is no longer needed. Will begin transition from needing the urls and urlInfo map.
 var urls = make(map[string]string)
 var urlInfo = make(map[string]URL)
 var serverLoc = "3030"
@@ -253,7 +254,7 @@ func handleRedirect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Retrieve the original URL from the `urls` map using the shortened key
+	// Retrieve the original URL from the URL db. This used to retrieve url from the url maps.
 	urlQuery := "Select LongURL from ShortURL where shorturl = ?"
 	var longurl string
 	err := db.QueryRow(urlQuery, shortKey).Scan(&longurl)
@@ -273,7 +274,7 @@ func handleRedirect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// After querying views, want to increment by one and update table.
+	// After querying views, want to increment by one and update table. Currently only works once per unique visit from a browser.
 	var views int
 	viewsQuery := "select views from shorturl where shorturl = ?"
 	// Scan is needed to get the err response from QueryRow. &views assigns the query value to view.
