@@ -22,6 +22,7 @@ var serverLoc = "3030"
 var homeURL = fmt.Sprintf("http://localhost:%s", serverLoc)
 var db *sql.DB
 
+// Constants associated with configuring db settings.
 const maxOpenConns = 10
 const maxIdleConns = 10
 const maxLifeTime = time.Minute * 3
@@ -81,6 +82,7 @@ func main() {
 	}
 	fmt.Println("Connected!")
 
+	//Handles what happens on each separate webpage
 	http.HandleFunc("/", handleMain)
 	http.HandleFunc("/shorturl", handleNewURL)
 	http.HandleFunc("/short/", handleRedirect)
