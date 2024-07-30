@@ -175,6 +175,7 @@ func handleNewURL(w http.ResponseWriter, r *http.Request) {
 		shortKey = generateShortKey()
 		// Make sure that key is not already in the map. If it's in the map, keep generating new keys.
 		// Maybe can change this to look into db instead of map stored locally when function runs.
+		// TODO: Change this to look at DB instead now that DB is set up properly.
 		val := urls[shortKey]
 		for val != "" {
 			shortKey = generateShortKey()
