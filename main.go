@@ -165,7 +165,7 @@ func handleNewURL(w http.ResponseWriter, r *http.Request) {
 
 	// Check if the url is a valid/public site
 	if !isReachable(originalURL) {
-		http.Error(w, "Not a valid original url", http.StatusBadRequest)
+		http.Error(w, "Not an actual/public website", http.StatusBadRequest)
 		return
 	}
 
