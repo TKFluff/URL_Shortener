@@ -47,11 +47,9 @@ const (
 	tablename = "ShortURL"
 )
 
-/*
-* Need a main page for user to input url
-Need a page after that url gets inputted that shows original url and now new url.
-Lastly, need a page to process that shortened url and "spit out" original url
-*/
+// Need a main page for user to input url
+// Need a page after that url gets inputted that shows original url and now new url.
+// Lastly, need a page to process that shortened url and "spit out" original url
 func main() {
 	cfg := mysql.Config{
 		User:   username,
@@ -293,6 +291,7 @@ func handleRedirect(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, longurl, http.StatusMovedPermanently)
 }
 
+// This generates the shortKey. Right now it's a randomized string from the charSet defined below.
 // Can change this up. Maybe the length can be randomized from a certain length to another. Ex: 5-8 characters long.
 func generateShortKey() string {
 	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
