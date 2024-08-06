@@ -276,6 +276,7 @@ func handleRedirect(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// After querying views, want to increment by one and update table. Currently only works once per unique visit from a browser.
+	// Views is the variable we query from the database. It is explicitly defined as an int to match the variable type in the database.
 	var views int
 	viewsQuery := "select views from shorturl where shorturl = ?"
 	// Scan is needed to get the err response from QueryRow. &views assigns the query value to view.
