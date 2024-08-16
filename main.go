@@ -310,11 +310,13 @@ func generateShortKey() string {
 	return strconv.FormatInt(frontTruncTime, 10) + strconv.FormatInt(backTruncTime, 10) + string(shortKey)
 }
 
+// Test to see if the inputted string is in url format.
 func isUrl(testUrl string) bool {
 	u, err := url.ParseRequestURI(testUrl)
 	return err == nil && u.Scheme != "" && u.Host != ""
 }
 
+// Test to see if the url leads to an actual hosted website.
 func isReachable(testUrl string) bool {
 	resp, err := http.Get(testUrl)
 	if err != nil {
