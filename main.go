@@ -179,6 +179,7 @@ func handleNewURL(w http.ResponseWriter, r *http.Request) {
 			shortKey = generateShortKey()
 			val = urls[shortKey]
 		}
+		// Case in which url Option is User-Selected. There should only be two url options.
 	} else {
 		shortKey = r.FormValue("shortenedURL")
 	}
