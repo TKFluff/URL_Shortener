@@ -88,7 +88,9 @@ func main() {
 	http.ListenAndServe(":"+serverLoc, nil)
 }
 
+// Deals with the main page
 func handleMain(w http.ResponseWriter, r *http.Request) {
+	// Actually not too sure what this does or is for...
 	if r.Method == http.MethodPost {
 		http.Redirect(w, r, "/shorturl", http.StatusSeeOther)
 		return
